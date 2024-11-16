@@ -506,7 +506,7 @@ public class ImmersivePaintingScreen extends Screen {
                             height / 2 - 80 + py * 20,
                             64,
                             16,
-                            new Identifier(material.getNamespace(), material.getPath().replace("/block/", "/gui/")),
+                            Identifier.of(material.getNamespace(), material.getPath().replace("/block/", "/gui/")),
                             0,
                             0,
                             64,

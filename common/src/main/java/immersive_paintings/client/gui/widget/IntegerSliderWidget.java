@@ -34,6 +34,6 @@ public class IntegerSliderWidget extends ExtendedSliderWidget<Integer> {
     }
 
     public Identifier getTexture() {
-        return new Identifier("immersive_paintings", "textures/gui/slider_bar.png");
+        return Identifier.of("immersive_paintings", "textures/gui/slider_bar.png");
     }
 }
