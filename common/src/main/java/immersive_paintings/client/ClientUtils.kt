@@ -1,16 +1,22 @@
-package immersive_paintings.client;
+package immersive_paintings.client
 
-import immersive_paintings.resources.ByteImage;
-import net.minecraft.client.texture.NativeImage;
+import immersive_paintings.resources.ByteImage
+import net.minecraft.client.texture.NativeImage
 
-public class ClientUtils {
-    public static NativeImage byteImageToNativeImage(ByteImage image) {
-        NativeImage nativeImage = new NativeImage(image.getWidth(), image.getHeight(), false);
-        for (int x = 0; x < image.getWidth(); x++) {
-            for (int y = 0; y < image.getHeight(); y++) {
-                nativeImage.setColor(x, y, image.getABGR(x, y));
+object ClientUtils {
+    @JvmStatic
+    fun byteImageToNativeImage(image: ByteImage): NativeImage {
+        val nativeImage = NativeImage(image.width, image.height, false)
+        for (x in 0..<image.width) {
+            for (y in 0..<image.height) {
+                nativeImage::class.java
+                    .getDeclaredMethod("setColor", Int::class.java, Int::class.java, Int::class.java)
+                    .let {
+                        it.isAccessible = true
+                        it.invoke(nativeImage, x, y, image.getABGR(x, y))
+                    }
             }
         }
-        return nativeImage;
+        return nativeImage
     }
 }

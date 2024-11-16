@@ -54,11 +54,11 @@ public abstract class PaintingDataMessage extends Message {
     }
 
     public Identifier getMotive() {
-        return new Identifier(motive);
+        return Identifier.of(motive);
     }
 
     public Identifier getFrame() {
-        return new Identifier(frame);
+        return Identifier.of(frame);
     }
 
     public int getRotation() {
@@ -66,7 +66,7 @@ public abstract class PaintingDataMessage extends Message {
     }
 
     public Identifier getMaterial() {
-        return new Identifier(material);
+        return Identifier.of(material);
     }
 
     public int getEntityId() {

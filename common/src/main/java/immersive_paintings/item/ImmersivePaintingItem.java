@@ -2,6 +2,8 @@ package immersive_paintings.item;
 
 import immersive_paintings.entity.AbstractImmersiveDecorationEntity;
 import immersive_paintings.entity.ImmersivePaintingEntity;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -40,9 +42,9 @@ public class ImmersivePaintingItem extends Item {
             World world = context.getWorld();
             ImmersivePaintingEntity paintingEntity = newPainting(world, attachmentPosition, direction, rotation);
 
-            NbtCompound nbtCompound = itemStack.getNbt();
+            NbtCompound nbtCompound = (NbtCompound) itemStack.getComponents();
             if (nbtCompound != null) {
-                EntityType.loadFromEntityNbt(world, playerEntity, paintingEntity, nbtCompound);
+                EntityType.loadFromEntityNbt(world, playerEntity, paintingEntity, NbtComponent.of(nbtCompound));
             }
 
             if (paintingEntity.canStayAttached()) {
@@ -53,7 +55,7 @@ public class ImmersivePaintingItem extends Item {
                 }
 
                 itemStack.decrement(1);
-                return ActionResult.success(world.isClient);
+                return ActionResult.SUCCESS;
             } else {
                 return ActionResult.CONSUME;
             }

@@ -9,6 +9,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
 
 import java.util.function.Supplier;
@@ -16,7 +18,7 @@ import java.util.function.Supplier;
 public interface Entities {
     Supplier<EntityType<Entity>> PAINTING = register("painting", EntityType.Builder
             .create(ImmersivePaintingEntity::new, SpawnGroup.MISC)
-            .setDimensions(0.5f, 0.5f)
+            .dimensions(0.5f, 0.5f)
             .maxTrackingRange(10)
             .trackingTickInterval(Integer.MAX_VALUE)
             .makeFireImmune()
@@ -24,7 +26,7 @@ public interface Entities {
 
     Supplier<EntityType<Entity>> GLOW_PAINTING = register("glow_painting", EntityType.Builder
             .create(ImmersiveGlowPaintingEntity::new, SpawnGroup.MISC)
-            .setDimensions(0.5f, 0.5f)
+            .dimensions(0.5f, 0.5f)
             .maxTrackingRange(10)
             .trackingTickInterval(Integer.MAX_VALUE)
             .makeFireImmune()
@@ -32,7 +34,7 @@ public interface Entities {
 
     Supplier<EntityType<Entity>> GRAFFITI = register("graffiti", EntityType.Builder
             .create(ImmersiveGraffitiEntity::new, SpawnGroup.MISC)
-            .setDimensions(0.5f, 0.5f)
+            .dimensions(0.5f, 0.5f)
             .maxTrackingRange(10)
             .trackingTickInterval(Integer.MAX_VALUE)
             .makeFireImmune()
@@ -40,7 +42,7 @@ public interface Entities {
 
     Supplier<EntityType<Entity>> GLOW_GRAFFITI = register("glow_graffiti", EntityType.Builder
             .create(ImmersiveGlowGraffitiEntity::new, SpawnGroup.MISC)
-            .setDimensions(0.5f, 0.5f)
+            .dimensions(0.5f, 0.5f)
             .maxTrackingRange(10)
             .trackingTickInterval(Integer.MAX_VALUE)
             .makeFireImmune()
@@ -52,6 +54,6 @@ public interface Entities {
 
     static <T extends Entity> Supplier<EntityType<T>> register(String name, EntityType.Builder<T> builder) {
         Identifier id = Main.locate(name);
-        return Registration.register(Registries.ENTITY_TYPE, id, () -> builder.build(id.toString()));
+        return Registration.register(Registries.ENTITY_TYPE, id, () -> builder.build(RegistryKey.of(RegistryKeys.ENTITY_TYPE, id)));
     }
 }

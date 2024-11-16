@@ -65,7 +65,7 @@ public class ClientNetworkManager implements NetworkManager {
         if (MinecraftClient.getInstance().currentScreen instanceof ImmersivePaintingScreen screen) {
             if (response.error.isEmpty()) {
                 if (screen.entity != null) {
-                    screen.entity.setMotive(new Identifier(response.identifier));
+                    screen.entity.setMotive(Identifier.of(response.identifier));
                     NetworkHandler.sendToServer(new PaintingModifyRequest(screen.entity));
 
                     if (screen.entity.isGraffiti()) {

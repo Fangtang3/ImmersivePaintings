@@ -3,6 +3,10 @@ package immersive_paintings.resources;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import immersive_paintings.Main;
 import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
@@ -22,20 +26,17 @@ public class FrameLoader extends JsonDataLoader {
         super(new Gson(), ID.getPath());
     }
 
-    private static final String DEFAULT_FRAME = Main.locate("frame/simple").toString();
-    private static final String DEFAULT_MATERIAL = Main.locate("frame/simple/oak").toString();
-
     @Override
-    protected void apply(Map<Identifier, JsonElement> prepared, ResourceManager manager, Profiler profiler) {
+    protected void apply(Object prepared, ResourceManager manager, Profiler profiler) {
         frames.clear();
-        for (Map.Entry<Identifier, JsonElement> entry : prepared.entrySet()) {
+        for (Map.Entry<Identifier, JsonElement> entry : ((Map<Identifier, JsonElement>) prepared).entrySet()) {
             try {
                 JsonObject object = entry.getValue().getAsJsonObject();
 
                 Frame frame = new Frame(
-                        new Identifier(JsonHelper.getString(object, "frame", DEFAULT_FRAME)),
+                        Identifier.of(JsonHelper.getString(object, "frame", DEFAULT_FRAME)),
                         JsonHelper.getBoolean(object, "diagonals", false),
-                        new Identifier(JsonHelper.getString(object, "material", DEFAULT_MATERIAL)));
+                        Identifier.of(JsonHelper.getString(object, "material", DEFAULT_MATERIAL)));
 
                 frames.put(entry.getKey(), frame);
             } catch (Exception e) {
@@ -43,4 +44,7 @@ public class FrameLoader extends JsonDataLoader {
             }
         }
     }
+
+    private static final String DEFAULT_FRAME = Main.locate("frame/simple").toString();
+    private static final String DEFAULT_MATERIAL = Main.locate("frame/simple/oak").toString();
 }

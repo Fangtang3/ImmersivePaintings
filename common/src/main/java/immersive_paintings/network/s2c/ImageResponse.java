@@ -33,7 +33,7 @@ public class ImageResponse extends SegmentedPaintingMessage {
 
     @Override
     protected void process(PlayerEntity e, ByteImage image) {
-        Painting painting = ClientPaintingManager.getPaintings().get(new Identifier(identifier));
+        Painting painting = ClientPaintingManager.getPaintings().get(Identifier.of(identifier));
         Painting.Texture texture = painting.getTexture(type);
         texture.image = image;
         ClientPaintingManager.registerImage(texture);

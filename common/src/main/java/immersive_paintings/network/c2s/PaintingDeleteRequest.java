@@ -30,7 +30,7 @@ public class PaintingDeleteRequest extends Message {
 
     @Override
     public void receive(PlayerEntity e) {
-        Identifier identifier = new Identifier(this.identifier);
+        Identifier identifier = Identifier.of(this.identifier);
 
         if (ServerPaintingManager.get().getCustomServerPaintings().get(identifier).author.equals(e.getGameProfile().getName()) || e.hasPermissionLevel(4)) {
             Main.LOGGER.info(String.format("Player %s deleted painting %s.", e, identifier));

@@ -11,6 +11,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.RotationAxis;
@@ -19,22 +20,28 @@ import org.joml.Matrix4f;
 import owens.oobjloader.Face;
 import owens.oobjloader.FaceVertex;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
-public class ImmersivePaintingEntityRenderer<T extends ImmersivePaintingEntity> extends EntityRenderer<T> {
+public class ImmersivePaintingEntityRenderer<T extends ImmersivePaintingEntity> extends EntityRenderer<T, EntityRenderState> {
     public ImmersivePaintingEntityRenderer(EntityRendererFactory.Context ctx) {
         super(ctx);
     }
 
     @Override
-    public void render(T entity, float yaw, float tickDelta, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
+    public EntityRenderState createRenderState() {
+        return null;
+    }
+
+    @Override
+    public void render(EntityRenderState state, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light) {
         matrixStack.push();
-        matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-yaw));
-        matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-entity.getPitch(tickDelta)));
+        //matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-yaw));
+        //matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-entity.getPitch(tickDelta)));
         matrixStack.scale(0.0625f, 0.0625f, 0.0625f);
-        renderPainting(matrixStack, vertexConsumerProvider, entity);
+        renderPainting(matrixStack, vertexConsumerProvider, state);
         matrixStack.pop();
-        super.render(entity, yaw, tickDelta, matrixStack, vertexConsumerProvider, light);
+        super.render(state, matrixStack, vertexConsumerProvider, light);
     }
 
     @Override
@@ -115,7 +122,7 @@ public class ImmersivePaintingEntityRenderer<T extends ImmersivePaintingEntity> 
     }
 
     private List<Face> getFaces(Identifier frame, String part) {
-        Identifier id = new Identifier(frame.getNamespace(), frame.getPath() + "/" + part + ".obj");
+        Identifier id = Identifier.of(frame.getNamespace(), frame.getPath() + "/" + part + ".obj");
         if (ObjectLoader.objects.containsKey(id)) {
             return ObjectLoader.objects.get(id);
         } else {

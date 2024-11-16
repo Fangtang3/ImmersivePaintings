@@ -10,6 +10,8 @@ import immersive_paintings.resources.Painting;
 import immersive_paintings.resources.ServerPaintingManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +19,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.server.network.EntityTrackerEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -70,9 +74,9 @@ public class ImmersivePaintingEntity extends AbstractImmersiveDecorationEntity {
 
     @Override
     public void readCustomDataFromNbt(NbtCompound nbt) {
-        this.motive = new Identifier(nbt.getString("Motive"));
-        this.frame = new Identifier(nbt.getString("Frame"));
-        this.material = new Identifier(nbt.getString("Material"));
+        this.motive = Identifier.of(nbt.getString("Motive"));
+        this.frame = Identifier.of(nbt.getString("Frame"));
+        this.material = Identifier.of(nbt.getString("Material"));
         this.updateMotiveDimensions();
         super.readCustomDataFromNbt(nbt);
     }
@@ -83,14 +87,11 @@ public class ImmersivePaintingEntity extends AbstractImmersiveDecorationEntity {
 
     @Override
     public void onBreak(@Nullable Entity entity) {
-        if (!getWorld().getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            return;
-        }
         playSound(SoundEvents.ENTITY_PAINTING_BREAK, 1.0f, 1.0f);
         if (entity instanceof PlayerEntity playerEntity && (playerEntity.getAbilities().creativeMode)) {
             return;
         }
-        dropItem(getDrop());
+        dropItem((ServerWorld) entity.getWorld(), getDrop());
     }
 
     @Override
@@ -99,8 +100,23 @@ public class ImmersivePaintingEntity extends AbstractImmersiveDecorationEntity {
     }
 
     @Override
+    protected void initDataTracker(DataTracker.Builder builder) {
+
+    }
+
+    @Override
     public void refreshPositionAndAngles(double x, double y, double z, float yaw, float pitch) {
         this.setPosition(x, y, z);
+    }
+
+    @Override
+    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+        if (!this.isRemoved() && !this.getWorld().isClient) {
+            this.kill(world);
+            this.scheduleVelocityUpdate();
+            this.onBreak(source.getAttacker());
+        }
+        return true;
     }
 
     @Override
@@ -110,7 +126,7 @@ public class ImmersivePaintingEntity extends AbstractImmersiveDecorationEntity {
     }
 
     @Override
-    public Packet<ClientPlayPacketListener> createSpawnPacket() {
+    public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
         return new EntitySpawnS2CPacket(this);
     }
 

@@ -163,7 +163,7 @@ public class ImmersivePaintingScreen extends Screen {
                 matrices.push();
                 matrices.translate(width / 2.0f - tw * size / 2.0f, height / 2.0f - th * size / 2.0f, 0.0f);
                 matrices.scale(size, size, 1.0f);
-                context.drawTexture(Main.locate("temp_pixelated"), 0, 0, 0, 0, tw, th, tw, th);
+                context.drawTexture(null, Main.locate("temp_pixelated"), 0, 0, 0, 0, tw, th, tw, th);
                 matrices.pop();
 
                 if (error != null) {

@@ -4,6 +4,7 @@ import immersive_paintings.Config;
 import immersive_paintings.util.ImageManipulations;
 import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.PersistentState;
@@ -24,7 +25,11 @@ public class ServerPaintingManager {
 
     public static CustomServerPaintings get() {
         return server.getOverworld().getPersistentStateManager()
-                .getOrCreate((new PersistentState.Type<>(CustomServerPaintings::new, CustomServerPaintings::fromNbt, DataFixTypes.SAVED_DATA_MAP_DATA)), "immersive_paintings");
+                .getOrCreate((new PersistentState.Type<>(
+                        CustomServerPaintings::new,
+                        (nbtCompound, wrapperLookup) -> CustomServerPaintings.fromNbt(nbtCompound),
+                        DataFixTypes.SAVED_DATA_MAP_DATA)),
+                        "immersive_paintings");
     }
 
     public static Map<Identifier, Painting> getDatapackPaintings() {
@@ -154,22 +159,22 @@ public class ServerPaintingManager {
         public static CustomServerPaintings fromNbt(NbtCompound nbt) {
             CustomServerPaintings c = new CustomServerPaintings();
             for (String key : nbt.getKeys()) {
-                c.customServerPaintings.put(new Identifier(key), Painting.fromNbt(nbt.getCompound(key)));
-            }
-            return c;
-        }
-
-        @Override
-        public NbtCompound writeNbt(NbtCompound nbt) {
-            NbtCompound c = new NbtCompound();
-            for (Map.Entry<Identifier, Painting> entry : customServerPaintings.entrySet()) {
-                c.put(entry.getKey().toString(), entry.getValue().toNbt());
+                c.customServerPaintings.put(Identifier.of(key), Painting.fromNbt(nbt.getCompound(key)));
             }
             return c;
         }
 
         public Map<Identifier, Painting> getCustomServerPaintings() {
             return customServerPaintings;
+        }
+
+        @Override
+        public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registries) {
+            NbtCompound c = new NbtCompound();
+            for (Map.Entry<Identifier, Painting> entry : customServerPaintings.entrySet()) {
+                c.put(entry.getKey().toString(), entry.getValue().toNbt());
+            }
+            return c;
         }
     }
 }

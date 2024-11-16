@@ -65,7 +65,7 @@ public class PaintingListMessage extends Message {
     public Map<Identifier, Painting> getPaintings() {
         Map<Identifier, Painting> paintings = new HashMap<>();
         for (Map.Entry<String, NbtCompound> entry : this.paintings.entrySet()) {
-            Identifier identifier = new Identifier(entry.getKey());
+            Identifier identifier = Identifier.of(entry.getKey());
             if (entry.getValue() == null) {
                 paintings.put(identifier, null);
             } else {

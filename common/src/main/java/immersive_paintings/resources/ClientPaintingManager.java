@@ -57,7 +57,7 @@ public class ClientPaintingManager {
 
     // registers this textures and make it readable
     public static void registerImage(Painting.Texture texture) {
-        NativeImage nativeImage = ClientUtils.byteImageToNativeImage(texture.image);
+        NativeImage nativeImage = ClientUtils   .byteImageToNativeImage(texture.image);
         texture.textureIdentifier = MinecraftClient.getInstance().getTextureManager()
                 .registerDynamicTexture("immersive_painting/" + texture.hash, new NativeImageBackedTexture(nativeImage));
     }

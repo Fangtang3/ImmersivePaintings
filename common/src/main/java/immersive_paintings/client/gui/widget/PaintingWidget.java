@@ -48,7 +48,7 @@ public class PaintingWidget extends DefaultButtonWidget {
         }
         matrices.translate(getX() + (this.width - tw * scale) / 2, getY() + (this.height - th * scale) / 2, 0.0f);
         matrices.scale(scale, scale, 1.0f);
-        context.drawTexture(thumbnail.textureIdentifier, 0, 0, 0, 0, tw, th, tw, th);
+        context.drawTexture(null, thumbnail.textureIdentifier, 0, 0, 0, 0, tw, th, tw, th);
         matrices.pop();
     }
 }

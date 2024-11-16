@@ -15,7 +15,7 @@ public final class Main {
     public static NetworkManager networkManager;
 
     public static Identifier locate(String path) {
-        return new Identifier(MOD_ID, path);
+        return Identifier.of(MOD_ID, path);
     }
 
     static {

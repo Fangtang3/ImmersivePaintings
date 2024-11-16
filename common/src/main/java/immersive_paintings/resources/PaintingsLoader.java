@@ -34,10 +34,10 @@ public class PaintingsLoader extends SinglePreparationResourceReloader<Map<Ident
         Map<Identifier, Resource> resources = manager.findResources(dataType, (path) -> path.getPath().endsWith(".png"));
         for (Map.Entry<Identifier, Resource> entry : resources.entrySet()) {
             String string = entry.getKey().getPath();
-            Identifier imageIdentifier = new Identifier(entry.getKey().getNamespace(), string.substring(dataTypeLength, string.length() - FILE_SUFFIX_LENGTH));
+            Identifier imageIdentifier = Identifier.of(entry.getKey().getNamespace(), string.substring(dataTypeLength, string.length() - FILE_SUFFIX_LENGTH));
 
             try {
-                Identifier jsonIdentifier = new Identifier(entry.getKey().getNamespace(), string.replace(".png", ".json"));
+                Identifier jsonIdentifier = Identifier.of(entry.getKey().getNamespace(), string.replace(".png", ".json"));
 
                 String hash = entry.getKey().toString().replaceAll("[^a-zA-Z\\d]", "");
 

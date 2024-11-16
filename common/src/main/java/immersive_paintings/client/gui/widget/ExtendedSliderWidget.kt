@@ -34,8 +34,9 @@ abstract class ExtendedSliderWidget<T> (
         }
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
         val i: Int = (if (this.isHovered) 2 else 1) * 20
-        context?.drawTexture1(texture, this.x + (getOpticalValue() * (this.width - 8).toDouble()).toInt(), this.y, 0, 46 + i, 4, 20)
-        context?.drawTexture1(texture, this.x + (getOpticalValue() * (this.width - 8).toDouble()).toInt() + 4, this.y, 196, 46 + i, 4, 20)
+        context?.drawTexture(null, texture, this.x + (getOpticalValue() * (this.width - 8).toDouble()).toInt(), this.y, 0F, (46 + i).toFloat(), 4, 20, 256, 256)
+        context?.drawTexture(null, texture, this.x + (getOpticalValue() * (this.width - 8).toDouble()).toInt() + 4, this.y, 196F, (46 + i).toFloat(), 4, 20, 256, 256)
+        //this.drawTexture(texture, x, y, 0, (float)u, (float)v, width, height, 256, 256);
 
         super.renderWidget(context, mouseX, mouseY, delta)
     }

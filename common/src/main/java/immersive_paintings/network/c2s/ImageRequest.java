@@ -35,7 +35,7 @@ public class ImageRequest extends Message {
 
     @Override
     public void receive(PlayerEntity e) {
-        Identifier identifier = new Identifier(this.identifier);
+        Identifier identifier = Identifier.of(this.identifier);
         Optional<byte[]> image = ServerPaintingManager.getImageData(identifier, type);
         image.ifPresent(i -> Utils.processByteArrayInChunks(i, (ints, split, splits) -> LazyNetworkManager.sendToClient(new ImageResponse(identifier, type, ints, split, splits), (ServerPlayerEntity)e)));
     }

@@ -35,7 +35,7 @@ public class ObjectLoader extends SinglePreparationResourceReloader<Map<Identifi
             try {
                 InputStream stream = res.getInputStream();
                 ArrayList<Face> faces = new Builder(new BufferedReader(new InputStreamReader(stream))).faces;
-                Identifier newId = new Identifier(id.getNamespace(), id.getPath());
+                Identifier newId = Identifier.of(id.getNamespace(), id.getPath());
                 objects.put(newId, faces);
             } catch (IOException e) {
                 throw new RuntimeException(e);

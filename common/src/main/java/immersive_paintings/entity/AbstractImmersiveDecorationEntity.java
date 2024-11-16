@@ -34,10 +34,6 @@ public abstract class AbstractImmersiveDecorationEntity extends Entity {
         this.attachmentPos = pos;
     }
 
-    @Override
-    protected void initDataTracker() {
-    }
-
     public void setFacing(Direction facing, int rotation) {
         this.facing = facing;
         this.rotation = rotation;
@@ -148,7 +144,7 @@ public abstract class AbstractImmersiveDecorationEntity extends Entity {
             if (!this.getWorld().canPlayerModifyAt(playerEntity, this.attachmentPos)) {
                 return true;
             }
-            return this.damage(attacker.getWorld().getDamageSources().playerAttack(playerEntity), 0.0f);
+            return this.damage((ServerWorld) this.getWorld(), attacker.getWorld().getDamageSources().playerAttack(playerEntity), 0.0f);
         }
         return false;
     }
@@ -158,23 +154,11 @@ public abstract class AbstractImmersiveDecorationEntity extends Entity {
         return this.facing;
     }
 
-    @Override
-    public boolean damage(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
-            return false;
-        }
-        if (!this.isRemoved() && !this.getWorld().isClient) {
-            this.kill();
-            this.scheduleVelocityUpdate();
-            this.onBreak(source.getAttacker());
-        }
-        return true;
-    }
 
     @Override
     public void move(MovementType movementType, Vec3d movement) {
         if (!this.getWorld().isClient && !this.isRemoved() && movement.lengthSquared() > 0.0) {
-            this.kill();
+            this.kill((ServerWorld) this.getWorld());
             this.onBreak(null);
         }
     }
@@ -182,7 +166,7 @@ public abstract class AbstractImmersiveDecorationEntity extends Entity {
     @Override
     public void addVelocity(double deltaX, double deltaY, double deltaZ) {
         if (!this.getWorld().isClient && !this.isRemoved() && deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ > 0.0) {
-            this.kill();
+            this.kill((ServerWorld) this.getWorld());
             this.onBreak(null);
         }
     }
@@ -230,8 +214,9 @@ public abstract class AbstractImmersiveDecorationEntity extends Entity {
 
     public abstract void onPlace();
 
+    @Nullable
     @Override
-    public ItemEntity dropStack(ItemStack stack, float yOffset) {
+    public ItemEntity dropStack(ServerWorld world, ItemStack stack, float yOffset) {
         ItemEntity itemEntity = new ItemEntity(this.getWorld(), this.getX() + ((double)this.facing.getOffsetX() * 0.3), this.getY() + ((double)this.facing.getOffsetY() * 0.3) + yOffset, this.getZ() + ((double)this.facing.getOffsetZ() * 0.3), stack);
         itemEntity.setToDefaultPickupDelay();
         this.getWorld().spawnEntity(itemEntity);
