@@ -37,7 +37,7 @@ public class PaintingWidget extends DefaultButtonWidget {
     }
 
     @Override
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         MatrixStack matrices = context.getMatrices();
         matrices.push();
         int tw = thumbnail.image == null ? 32 : thumbnail.image.getWidth();

@@ -2,10 +2,15 @@ package immersive_paintings.client.gui.widget;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.ScreenRect;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.tooltip.TooltipPositioner;
+import net.minecraft.client.gui.tooltip.WidgetTooltipPositioner;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import org.jetbrains.annotations.MustBeInvokedByOverriders;
+import org.joml.Vector2ic;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -24,8 +29,8 @@ public class DefaultButtonWidget extends ButtonWidget {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
+        super.renderWidget(context, mouseX, mouseY, delta);
 
         if (visible) {
             applyTooltip();
@@ -36,7 +41,7 @@ public class DefaultButtonWidget extends ButtonWidget {
         if (this.tooltipSupplier != null && isHovered()) {
             Screen screen = MinecraftClient.getInstance().currentScreen;
             if (screen != null) {
-                screen.setTooltip(this.tooltipSupplier.get(), this.getTooltipPositioner(), this.isFocused());
+                screen.setTooltip(this.tooltipSupplier.get(), new WidgetTooltipPositioner(screen.getNavigationFocus()), this.isFocused());
             }
         }
     }

@@ -2,6 +2,7 @@ package immersive_paintings.resources;
 
 import immersive_paintings.Config;
 import immersive_paintings.util.ImageManipulations;
+import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
@@ -23,7 +24,7 @@ public class ServerPaintingManager {
 
     public static CustomServerPaintings get() {
         return server.getOverworld().getPersistentStateManager()
-                .getOrCreate(CustomServerPaintings::fromNbt, CustomServerPaintings::new, "immersive_paintings");
+                .getOrCreate((new PersistentState.Type<>(() -> null, nbtCompound -> null, DataFixTypes.SAVED_DATA_MAP_DATA)), "immersive_paintings");
     }
 
     public static Map<Identifier, Painting> getDatapackPaintings() {

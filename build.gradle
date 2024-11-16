@@ -1,8 +1,10 @@
 plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
+    id "dev.architectury.loom" version "1.7.413" apply false
+    id "org.jetbrains.kotlin.jvm" version "2.0.20" apply false
 }
 
+System.out.println("java version:" + System.getProperty("java.version"))
 architectury {
     minecraft = rootProject.minecraft_version
 }
@@ -41,15 +43,22 @@ def getAppVersion = { ->
 } as Object
 
 allprojects {
-    apply plugin: "java"
-    apply plugin: "architectury-plugin"
+    //apply plugin: "java"
+    var map = new HashMap<String, String>()
+    map.put("plugin", "java")
+    apply(map)
+    map.clear()
+    map.put("plugin", "architectury-plugin")
+    apply(map)
+    map.clear()
+    map.put("plugin", "org.jetbrains.kotlin.jvm")
+    apply(map)
 
     archivesBaseName = rootProject.archives_base_name
     version = getAppVersion()
 
     tasks.withType(JavaCompile) {
         options.encoding = "UTF-8"
-        options.release = 16
     }
 
     java {

@@ -1,6 +1,7 @@
 package immersive_paintings.client.gui.widget;
 
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
 
@@ -23,12 +24,16 @@ public class IntegerSliderWidget extends ExtendedSliderWidget<Integer> {
     }
 
     @Override
-    Integer getValue() {
+    public Integer getValue() {
         return (int)(value * (max - min) + min);
     }
 
     @Override
     protected double getOpticalValue() {
         return ((double)getValue() - min) / (max - min);
+    }
+
+    public Identifier getTexture() {
+        return new Identifier("immersive_paintings", "textures/gui/slider_bar.png");
     }
 }

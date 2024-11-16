@@ -1,6 +1,7 @@
 package immersive_paintings.client.gui.widget;
 
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
 
@@ -23,7 +24,11 @@ public class DoubleSliderWidget extends ExtendedSliderWidget<Double> {
     }
 
     @Override
-    Double getValue() {
+    public Double getValue() {
         return value * (max - min) + min;
+    }
+
+    public Identifier getTexture() {
+        return new Identifier("immersive_paintings", "textures/gui/slider_bar.png");
     }
 }

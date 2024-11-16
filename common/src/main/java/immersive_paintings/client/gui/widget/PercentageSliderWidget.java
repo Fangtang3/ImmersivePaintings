@@ -1,6 +1,7 @@
 package immersive_paintings.client.gui.widget;
 
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 
 import java.util.function.Consumer;
 
@@ -20,12 +21,16 @@ public class PercentageSliderWidget extends DoubleSliderWidget {
     }
 
     @Override
-    Double getValue() {
+    public Double getValue() {
         return (int)(super.getValue() * 100.0 + 0.5) / 100.0;
     }
 
     @Override
     protected double getOpticalValue() {
         return (getValue() - min) / (max - min);
+    }
+
+    public Identifier getTexture() {
+        return super.getTexture();
     }
 }

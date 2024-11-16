@@ -1,6 +1,6 @@
 package immersive_paintings.network;
 
-import immersive_paintings.client.gui.ImmersivePaintingScreen;
+import immersive_paintings.client.gui.widget.ImmersivePaintingScreen;
 import immersive_paintings.cobalt.network.NetworkHandler;
 import immersive_paintings.entity.ImmersivePaintingEntity;
 import immersive_paintings.network.c2s.PaintingModifyRequest;

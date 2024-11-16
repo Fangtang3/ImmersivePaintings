@@ -1,6 +1,6 @@
 package immersive_paintings.dev;
 
-import immersive_paintings.client.gui.ImmersivePaintingScreen.PixelatorSettings;
+import immersive_paintings.client.gui.widget.ImmersivePaintingScreen.PixelatorSettings;
 import immersive_paintings.resources.ByteImage;
 import immersive_paintings.util.ImageManipulations;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Locale;
 
-import static immersive_paintings.client.gui.ImmersivePaintingScreen.pixelateImage;
+import static immersive_paintings.client.gui.widget.ImmersivePaintingScreen.pixelateImage;
 
 public class DatapackPaintingsGenerator {
     static final String base = "../paintings/";

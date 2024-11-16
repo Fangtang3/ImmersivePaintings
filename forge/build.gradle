@@ -1,3 +1,5 @@
+import java.util.regex.Pattern
+
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
 }
@@ -44,17 +46,17 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    //classifier "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
+    //classifier null
 }
 
 jar {
-    classifier "dev"
+    //classifier "dev"
 }
 
 sourcesJar {
@@ -78,4 +80,7 @@ afterEvaluate {
                 .replaceAll("@MINECRAFT_VERSION@", rootProject.architectury.minecraft)
                 .replaceAll("@FORGE_VERSION@", rootProject.forge_version)
     }
+}
+repositories {
+    mavenCentral()
 }

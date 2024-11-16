@@ -1,37 +1,50 @@
-package immersive_paintings.client.gui.widget;
+package immersive_paintings.client.gui.widget
 
-import immersive_paintings.util.FlowingText;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.widget.CheckboxWidget;
-import net.minecraft.text.Text;
+import immersive_paintings.util.FlowingText
+import net.minecraft.client.MinecraftClient
+import net.minecraft.client.gui.DrawContext
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder
+import net.minecraft.client.gui.screen.narration.NarrationPart
+import net.minecraft.client.gui.widget.PressableWidget
+import net.minecraft.text.Text
+import java.util.function.Consumer
 
-import java.util.function.Consumer;
+class CallbackCheckboxWidget(
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    message: Text,
+    private val tooltip: Text?,
+    private var checked: Boolean,
+    showMessage: Boolean,
+    private val onChecked: Consumer<Boolean>
+): PressableWidget(x, y, width, height, message) {
+    override fun renderWidget(context: DrawContext, mouseX: Int, mouseY: Int, delta: Float) {
+        if (this.visible) {
+            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height
+        }
 
-public class CallbackCheckboxWidget extends CheckboxWidget {
-    private final Consumer<Boolean> onChecked;
-    private final Text tooltip;
-
-    public CallbackCheckboxWidget(int x, int y, int width, int height, Text message, Text tooltip, boolean checked, boolean showMessage, Consumer<Boolean> onChecked) {
-        super(x, y, width, height, message, checked, showMessage);
-
-        this.onChecked = onChecked;
-        this.tooltip = tooltip;
+        if (isHovered && tooltip != null) {
+            context.drawTooltip(MinecraftClient.getInstance().textRenderer, FlowingText.wrap(tooltip, 160), mouseX, mouseY)
+        }
     }
 
-    @Override
-    public void onPress() {
-        super.onPress();
-
-        onChecked.accept(isChecked());
+    override fun onPress() {
+        checked = !checked
+        onChecked.accept(checked)
     }
 
-    @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        super.render(context, mouseX, mouseY, delta);
-
-        if (isHovered() && tooltip != null) {
-            context.drawTooltip(MinecraftClient.getInstance().textRenderer, FlowingText.wrap(tooltip, 160), mouseX, mouseY);
+    override fun appendClickableNarrations(builder: NarrationMessageBuilder?) {
+        builder?.let { i ->
+            i.put(NarrationPart.TITLE, this.narrationMessage);
+            if (this.active) {
+                if (this.isFocused) {
+                    i.put(NarrationPart.USAGE, Text.translatable("narration.checkbox.usage.focused"))
+                } else {
+                    i.put(NarrationPart.USAGE, Text.translatable("narration.checkbox.usage.hovered"))
+                }
+            }
         }
     }
 }

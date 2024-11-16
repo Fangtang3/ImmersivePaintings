@@ -1,8 +1,7 @@
-package immersive_paintings.client.gui;
+package immersive_paintings.client.gui.widget;
 
 import immersive_paintings.Main;
 import immersive_paintings.client.ClientUtils;
-import immersive_paintings.client.gui.widget.*;
 import immersive_paintings.cobalt.network.NetworkHandler;
 import immersive_paintings.entity.ImmersivePaintingEntity;
 import immersive_paintings.network.LazyNetworkManager;
@@ -341,10 +340,14 @@ public class ImmersivePaintingScreen extends Screen {
                 y += 22;
 
                 // Hide
-                addDrawableChild(new CallbackCheckboxWidget(width / 2 + 100, y, 100, 20,
+                addDrawableChild(new CallbackCheckboxWidget(width / 2 + 100,
+                        y,
+                        100,
+                        20,
                         Text.translatable("immersive_paintings.hide"),
                         Text.translatable("immersive_paintings.visibility"),
-                        settings.hidden, true,
+                        settings.hidden,
+                        true,
                         v -> settings.hidden = !settings.hidden));
                 y += 22;
 

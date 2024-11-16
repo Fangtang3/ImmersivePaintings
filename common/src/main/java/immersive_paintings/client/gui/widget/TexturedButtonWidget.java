@@ -27,7 +27,7 @@ public class TexturedButtonWidget extends DefaultButtonWidget {
     }
 
     @Override
-    public void renderButton(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
         if (hovered) {
             RenderSystem.setShaderColor(1.0f, 0.75f, 0.75f, this.alpha);
         } else {
