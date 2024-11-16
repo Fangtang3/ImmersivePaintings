@@ -24,7 +24,7 @@ public class ServerPaintingManager {
 
     public static CustomServerPaintings get() {
         return server.getOverworld().getPersistentStateManager()
-                .getOrCreate((new PersistentState.Type<>(() -> null, nbtCompound -> null, DataFixTypes.SAVED_DATA_MAP_DATA)), "immersive_paintings");
+                .getOrCreate((new PersistentState.Type<>(CustomServerPaintings::new, CustomServerPaintings::fromNbt, DataFixTypes.SAVED_DATA_MAP_DATA)), "immersive_paintings");
     }
 
     public static Map<Identifier, Painting> getDatapackPaintings() {
