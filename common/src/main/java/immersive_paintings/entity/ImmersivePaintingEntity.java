@@ -127,7 +127,7 @@ public class ImmersivePaintingEntity extends AbstractImmersiveDecorationEntity {
 
     @Override
     public Packet<ClientPlayPacketListener> createSpawnPacket(EntityTrackerEntry entityTrackerEntry) {
-        return new EntitySpawnS2CPacket(this);
+        return new EntitySpawnS2CPacket(this, entityTrackerEntry);
     }
 
     @Override

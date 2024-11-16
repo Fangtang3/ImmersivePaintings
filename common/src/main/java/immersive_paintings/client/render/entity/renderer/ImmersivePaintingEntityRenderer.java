@@ -13,14 +13,15 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockRenderView;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import owens.oobjloader.Face;
 import owens.oobjloader.FaceVertex;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 public class ImmersivePaintingEntityRenderer<T extends ImmersivePaintingEntity> extends EntityRenderer<T, EntityRenderState> {
@@ -44,15 +45,14 @@ public class ImmersivePaintingEntityRenderer<T extends ImmersivePaintingEntity> 
         super.render(state, matrixStack, vertexConsumerProvider, light);
     }
 
-    @Override
-    public Identifier getTexture(T paintingEntity) {
+    public Identifier getTexture(EntityRenderState paintingEntity) {
         MinecraftClient client = MinecraftClient.getInstance();
         Config config = Config.getInstance();
 
         ClientPlayerEntity player = client.player;
-        double distance = (player == null ? 0 : player.getPos().distanceTo(paintingEntity.getPos()));
+        double distance = (player == null ? 0 : player.getPos().distanceTo(paintingEntity.nameLabelPos));
         double blocksVisible = Math.tan(client.options.getFov().getValue() / 180.0 * Math.PI / 2.0) * 2.0 * distance;
-        int resolution = ClientPaintingManager.getPainting(paintingEntity.getMotive()).resolution;
+        int resolution = ClientPaintingManager.getPainting(paintingEntity).resolution;
         double pixelDensity = blocksVisible * resolution / client.getWindow().getHeight();
 
         Painting.Type type = pixelDensity > config.eighthResolutionThreshold ? Painting.Type.EIGHTH
@@ -60,7 +60,7 @@ public class ImmersivePaintingEntityRenderer<T extends ImmersivePaintingEntity> 
                 : pixelDensity > config.halfResolutionThreshold ? Painting.Type.HALF
                 : Painting.Type.FULL;
 
-        return ClientPaintingManager.getPaintingTexture(paintingEntity.getMotive(), type).textureIdentifier;
+        return ClientPaintingManager.getPaintingTexture(paintingEntity, type).textureIdentifier;
     }
 
     protected int getLight(int light) {
@@ -71,8 +71,8 @@ public class ImmersivePaintingEntityRenderer<T extends ImmersivePaintingEntity> 
         return light;
     }
 
-    private void renderPainting(MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, T entity) {
-        int light = WorldRenderer.getLightmapCoordinates(entity.getWorld(), entity.getBlockPos());
+    private void renderPainting(MatrixStack matrices, VertexConsumerProvider vertexConsumerProvider, EntityRenderState entity) {
+        int light = WorldRenderer.getLightmapCoordinates((BlockRenderView) ServerWorld.OVERWORLD, new BlockPos((int) entity.x, (int) entity.y, (int) entity.z));
 
         MatrixStack.Entry entry = matrices.peek();
         Matrix4f posMat = entry.getPositionMatrix();
@@ -80,39 +80,31 @@ public class ImmersivePaintingEntityRenderer<T extends ImmersivePaintingEntity> 
 
         VertexConsumer vertexConsumer;
 
-        boolean hasFrame = !entity.getFrame().getPath().equals("none");
 
-        int width = entity.getWidthPixels();
-        int height = entity.getHeightPixels();
+        float width = entity.width;
+        float height = entity.height;
 
         //canvas
         vertexConsumer = vertexConsumerProvider.getBuffer(isTranslucent() ? RenderLayer.getEntityTranslucent(getTexture(entity)) : RenderLayer.getEntitySolid(getTexture(entity)));
-        renderFaces(isTranslucent() ? "objects/graffiti.obj" : "objects/canvas.obj", posMat, normMat, vertexConsumer, getLight(light), width, height, hasFrame ? 1.0f : 0.0f);
-
-        //frame
-        int frameLight = getFrameLight(light);
-        if (hasFrame) {
-            vertexConsumer = vertexConsumerProvider.getBuffer(RenderLayer.getEntityCutout(entity.getMaterial()));
-            renderFrame(entity.getFrame(), posMat, normMat, vertexConsumer, frameLight, width, height);
-        }
+        renderFaces(isTranslucent() ? "objects/graffiti.obj" : "objects/canvas.obj", posMat, normMat, vertexConsumer, getLight(light), width, height);
     }
 
     protected boolean isTranslucent() {
         return false;
     }
 
-    private void renderFaces(String name, Matrix4f posMat, Matrix3f normMat, VertexConsumer vertexConsumer, int light, float width, float height, float margin) {
+    private void renderFaces(String name, Matrix4f posMat, Matrix3f normMat, VertexConsumer vertexConsumer, int light, float width, float height) {
         List<Face> faces = ObjectLoader.objects.get(Main.locate(name));
         for (Face face : faces) {
             for (FaceVertex v : face.vertices) {
                 vertex(posMat,
                         normMat,
                         vertexConsumer,
-                        v.v.x * (width - margin * 2),
-                        v.v.y * (height - margin * 2),
+                        v.v.x * (width - (float) 0.0 * 2),
+                        v.v.y * (height - (float) 0.0 * 2),
                         v.v.z * 16.0f,
-                        v.t.u * (width - margin * 2) / width + margin / width,
-                        (1.0f - v.t.v) * (height - margin * 2) / height + margin / height,
+                        v.t.u * (width - (float) 0.0 * 2) / width + (float) 0.0 / width,
+                        (1.0f - v.t.v) * (height - (float) 0.0 * 2) / height + (float) 0.0 / height,
                         v.n.x,
                         v.n.y,
                         v.n.z,
@@ -170,6 +162,6 @@ public class ImmersivePaintingEntityRenderer<T extends ImmersivePaintingEntity> 
     }
 
     private void vertex(Matrix4f positionMatrix, Matrix3f normalMatrix, VertexConsumer vertexConsumer, float x, float y, float z, float u, float v, float normalX, float normalY, float normalZ, int light) {
-        vertexConsumer.vertex(positionMatrix, x, y, z - 0.5f).color(255, 255, 255, 255).texture(u, v).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(normalMatrix, normalX, normalY, normalZ).next();
+        vertexConsumer.vertex(positionMatrix, x, y, z - 0.5f).color(255, 255, 255, 255).texture(u, v).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(normalX, normalY, normalZ);
     }
 }

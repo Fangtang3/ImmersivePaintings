@@ -4,7 +4,6 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "2.0.20" apply false
 }
 
-System.out.println("java version:" + System.getProperty("java.version"))
 architectury {
     minecraft = rootProject.minecraft_version
 }

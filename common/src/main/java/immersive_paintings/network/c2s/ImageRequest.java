@@ -6,6 +6,7 @@ import immersive_paintings.network.s2c.ImageResponse;
 import immersive_paintings.resources.Painting;
 import immersive_paintings.resources.ServerPaintingManager;
 import immersive_paintings.util.Utils;
+import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
