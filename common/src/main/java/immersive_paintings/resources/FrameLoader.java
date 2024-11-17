@@ -22,8 +22,8 @@ public class FrameLoader extends JsonDataLoader {
 
     public static final Map<Identifier, Frame> frames = new HashMap<>();
 
-    public FrameLoader() {
-        super(new Gson(), ID.getPath());
+    protected FrameLoader() {
+        super(Codec.STRING, ID.getPath());
     }
 
     @Override
