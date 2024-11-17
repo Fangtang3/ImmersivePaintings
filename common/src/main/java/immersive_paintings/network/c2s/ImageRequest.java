@@ -23,6 +23,11 @@ public class ImageRequest extends Message {
         this.type = type;
     }
 
+    public ImageRequest(EntityRenderState identifier, Painting.Type type) {
+        this.identifier = identifier.toString();
+        this.type = type;
+    }
+
     public ImageRequest(PacketByteBuf b) {
         this.identifier = b.readString();
         this.type = b.readEnumConstant(Painting.Type.class);
